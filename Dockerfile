@@ -22,6 +22,8 @@ RUN if [ "${OS_BASE}" = "centos" ]; then \
 COPY package.py vtr_spack_package.py
 
 RUN git clone https://github.com/spack/spack.git
+
+# Split the commands of different build stages to leverage Docker's build cache
 RUN alias python="env python3" && . spack/share/spack/setup-env.sh && \
     spack compiler find; \
     if [ "${OS_VERSION}" = "centos7" ]; then \
@@ -37,6 +39,7 @@ RUN alias python="env python3" && . spack/share/spack/setup-env.sh && \
 RUN alias python="env python3" && . spack/share/spack/setup-env.sh && \
     spack load vtr && echo "VTR Root Path is: $VTR_ROOT"
     # ./vtr_flow/scripts/run_vtr_task.py \
-    # regression_tests/vtr_reg_basic/basic_timing
+    # regression_tests/vtr_reg_basic/basic_timing && \
+    # ./run_reg_test.py parmys_reg_basic
 
 SHELL ["/bin/bash", "-c"]
