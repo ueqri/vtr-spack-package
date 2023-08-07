@@ -16,7 +16,7 @@ class Vtr(MakefilePackage):
     homepage = "https://verilogtorouting.org/"
     git = "https://github.com/verilog-to-routing/vtr-verilog-to-routing.git"
 
-    maintainers("ueqri")
+    maintainers("ueqri") # for maintaining this package in the Spack community
 
     variant(
         "eigen3",
