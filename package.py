@@ -19,15 +19,15 @@ class Vtr(MakefilePackage):
     maintainers("ueqri")
 
     variant(
-        "tbb",
-        default=True,
-        description="Build VTR with Intel Threading Building Blocks (TBB) library",
-    )
-
-    variant(
         "eigen3",
         default=True,
         description="Build VTR with Eigen 3 library",
+    )
+
+    variant(
+        "tbb",
+        default=True,
+        description="Build VTR with Intel Threading Building Blocks (TBB) library",
     )
 
     variant(
@@ -50,9 +50,9 @@ class Vtr(MakefilePackage):
     depends_on("py-wheel", type=("build", "run"), when="+python")
     depends_on("py-setuptools", type="build", when="+python")
 
-    # This dependency is different from what `spack compilers` lists (which used
-    # to compile the spack packages). This is only used to compile the Yosys
-    # which is included within VTR codebase.
+    # This dependency is different from what `spack compilers` lists (which were
+    # used to compile the Spack packages). This is only used to compile Yosys,
+    # which is included within the VTR codebase.
     depends_on("llvm@12: libcxx=project")
 
     depends_on("cmake@3.14:", type="build")
@@ -82,7 +82,6 @@ class Vtr(MakefilePackage):
 
     # Additional dependencies: Eigen and Intel TBB
     depends_on("eigen@3:", when="+eigen3")
-
     # FindTBB.cmake in the VTR does not work with latest TBB package layout.
     depends_on("intel-tbb@:2020.3", when="+tbb")
 
@@ -100,8 +99,8 @@ class Vtr(MakefilePackage):
             except spack.error.NoLibrariesError:
                 pass
         # Build uses a mix of Spack's compiler wrapper and the actual compiler
-        # LLVM Clang, so this is needed to get parts of the build (i.e., yosys)
-        # working.
+        # LLVM Clang. Therefore, it's necessary to set the following environment
+        # variables in order to build specific components (i.e., Yosys) of VTR.
         env.set("CPATH", ":".join(include))
         env.set("LIBRARY_PATH", ":".join(library))
 
