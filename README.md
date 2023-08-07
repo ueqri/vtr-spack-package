@@ -1,2 +1,2 @@
-# vtr-spack-package
+# VTR Spack Package
 Spack package for VTR framework

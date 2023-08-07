@@ -1,0 +1,40 @@
+name: Test VTR Spack Package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          [
+            { base: centos, version: centos7 },
+            { base: centos, version: centos8 },
+            { base: ubuntu, version: 18.04 },
+            { base: ubuntu, version: 20.04 },
+            { base: ubuntu, version: 22.04 },
+          ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: docker/build-push-action@v3
+        with:
+          tags: vtr-spack-${{matrix.os.base}}:${{matrix.os.version}}
+          build-args: |
+            OS_BASE=${{matrix.os.base}}
+            OS_VERSION=${{matrix.os.version}}
+          push: false
+      - uses: addnab/docker-run-action@v3
+        with:
+          image: vtr-spack-${{matrix.os.base}}:${{matrix.os.version}}
+          run: |
+            alias python="env python3" && \
+            . spack/share/spack/setup-env.sh && \
+            spack load vtr && \
+            cd $VTR_ROOT && \
+            ./vtr_flow/scripts/run_vtr_task.py \
+            regression_tests/vtr_reg_basic/basic_timing && \
+            /run_reg_test.py parmys_reg_basic
